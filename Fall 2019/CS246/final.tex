@@ -1,0 +1,1228 @@
+\documentclass[12pt]{article}
+\usepackage{tasks}
+\usepackage{exsheets}
+\usepackage{graphicx}
+\usepackage{fullpage}
+\usepackage{multicol}
+\usepackage{amsmath,amsthm,amssymb}
+\usepackage{polynom}
+\SetupExSheets[question]{type=exam}
+
+\newtheorem{theorem}{Theorem}
+\newtheorem{corollary}{Corollary}[theorem]
+\newtheorem{lemma}[theorem]{Lemma}
+
+\newcommand{\N}{\mathbb{N}}
+\newcommand{\Z}{\mathbb{Z}}
+\newcommand{\R}{\mathbb{R}}
+
+\usepackage{listings}
+\usepackage{color}
+
+\definecolor{dkgreen}{rgb}{0,0.6,0}
+\definecolor{gray}{rgb}{0.5,0.5,0.5}
+\definecolor{mauve}{rgb}{0.58,0,0.82}
+
+\usepackage{hyperref}
+\hypersetup{
+    %colorlinks=true, %set true if you want colored links
+    linktoc=all,     %set to all if you want both sections and subsections linked
+    %linkcolor=blue,  %choose some color if you want links to stand out
+}
+
+\lstset{frame=tb,
+  language=C++,
+  aboveskip=3mm,
+  belowskip=3mm,
+  showstringspaces=false,
+  columns=flexible,
+  basicstyle={\small\ttfamily},
+  numbers=none,
+  numberstyle=\tiny\color{gray},
+  keywordstyle=\color{blue},
+  commentstyle=\color{dkgreen},
+  stringstyle=\color{mauve},
+  breaklines=true,
+  breakatwhitespace=true,
+  tabsize=3
+}
+
+\title{Final Review}
+\author{CS 246 Fall 2019}
+\date{December 2019}
+
+\begin{document}
+\maketitle
+
+\tableofcontents\newpage
+
+\section{Encapsulation, System Modelling}
+\subsection{\lstinline{friend} Keyword}
+Problem: We would like to make the iterator class private (so users cannot access it). However, the List class would also not be able to access it.\\
+Solution: declare List as a friend
+\begin{lstlisting}
+class List {
+    // code
+    public:
+        class Iterator {
+        //code
+        Node *p;
+        Iterator(Node *p);
+        //code
+        public:
+            //code
+            friend class List;
+        };
+
+};
+\end{lstlisting}
+\begin{itemize}
+    \item Have as few friends a  s possible (since having friends breaks encapsulation)
+    \item Keep all fields private
+\end{itemize}
+
+\subsection{Setters and Getters}
+Implement acessors/getters and mutators/setteres to provide read/write access. If you have an invariant about private fields, you can enforce them using the getters/setters.
+
+\subsection{I/O Operators and Friendships}
+\begin{itemize}
+    \item \lstinline{operator<<} and \lstinline{operator>> have to be stand-alone functions and need access to the fields}
+\end{itemize}
+Problem with using getters/setters: while the I/O operators can use these fields, any other user can use them as well.
+Solution: Class can declare the I/O operators as friends
+\begin{lstlisting}
+class Vec {
+    int x, y;
+    friend ostream &operator<<(ostream &, const Vec &);
+    // code
+};
+
+ostream &operator(ostream &, const Vec &); 
+\end{lstlisting}
+
+\subsection{System Modelling}
+\begin{itemize}
+    \item Identify the key abstractions/entities/classes
+    \item Identify the relationship between classes
+    \item \textbf{UML}: Unified Modelling Language
+\end{itemize}
+
+\textbf{Relationship 1: Composition (OWNS-A)}
+\begin{lstlisting}
+class Vec {
+    int x, y;
+    public:
+        Vec(int x, int y): x{x}, y{y} {}
+};
+
+class Basis {
+    Vec v1, v2;
+};
+
+Basis b; // this won't compile since default constructing v1, v2 requires Vec's default constructor
+\end{lstlisting}
+Option 1: Provide a default constructor
+Option 2: Bypass the call to the default constructor by calling a different constructor in the MIL
+\begin{lstlisting}
+class Basis {
+    Vec v1, v2;
+    public:
+        Basis(): v1{0,0}, v2{1,1} {}
+};
+Basis b; // compiles
+\end{lstlisting}
+Basis OWNS-A Vec.
+A OWNS-A B if:
+\begin{itemize}
+    \item whenever A is copied, B is copied (deep)
+    \item whenever A is destroyed, B is destroyed
+\end{itemize}
+
+\textbf{Relationship 2: Aggregation (HAS-A)}
+We say A HAS-B if:
+\begin{itemize}
+    \item when A is copied, B is not (shallow)
+    \item when A is destroyed, B is not
+\end{itemize}
+\textbf{Relationship 3: Inheritance (IS-A)}
+\section{Inheritance}
+
+\noindent How can we show the relationship of inheritance in C++ code?
+
+\begin{lstlisting}
+class Book {
+    string title, author;
+    int numPages;
+    public:
+    Book(string title, string author, int numPages) : title{title}, author{author}, numPages{numPages} {}
+};
+
+class Text : public Book { // syntax to say Text IS-A Book, same as extends in Java
+    string topic;
+    // code
+};
+\end{lstlisting}
+Because \lstinline{Text} IS-A \lstinline{Book} object, we can do anything with a \lstinline{Text} object that we could with a \lstinline{Book} object. For example, \lstinline{ifstream} IS-A \lstinline{istream}.\\\\Subclasses inherit ALL members from the superclass.
+\begin{lstlisting}
+int main {
+    Text t{};
+    t.author = "";
+    // above line will not compile, since author is private from the Book class
+}
+\end{lstlisting}
+Let's (attempt to) write the constructor for \lstinline{Text}.
+\begin{lstlisting}
+Text::Text(string t, string a, int n, string to) : title{t}, author{a}, numPages{n}, topic{to} {}
+\end{lstlisting}
+The above constructor will compile.
+\begin{enumerate}
+    \item title, author, numPages are private in Book
+    \item MIL can only refer to fields declared in that class
+    \item Unable to default construct the superclass part of the object (however it would not make sense to set default values for a Book)
+\end{enumerate}
+
+\subsection{Steps for Object Creation (Updated)}
+\begin{enumerate}
+    \item Space is allocated
+    \item Superclass part is constructed
+    \item Subclass fields are constructed
+    \item Constructor Body runs
+\end{enumerate}
+
+\noindent The constructor below will fix all three issues from before, by using the superclass constructor for superclass fields.
+\begin{lstlisting}
+Text::Text(string t, string a, int n, string to) : Book{t, a, n}, topic{to} {}
+\end{lstlisting}
+
+\subsection{\lstinline{protected} Keyword}
+\begin{itemize}
+    \item Accessible to the class and its subclasses
+\end{itemize}
+\begin{lstlisting}
+class Book {
+    protected:
+    string author;
+    //////
+};
+class Text : public Book {
+    //////
+    void addAuthor(string a) { author += a}
+};
+int main() {
+    Text t{};
+    t.author = x;
+}
+\end{lstlisting}
+Using \lstinline{protected} breaks encapsulation.
+\begin{itemize}
+    \item Subclasses can break invariants
+\end{itemize}
+\begin{lstlisting}
+class Book {
+    string author;
+    protected:
+    void addAuthor(string a) {
+        // invariant check on value "a"
+        author += a;
+    }
+};
+\end{lstlisting}
+
+\subsection{Method Overriding}
+You can write methods with the $exact$ same signature, as long as they're in different classes.\\\\
+\begin{itemize}
+    \item Book is heavy if numPages $>$ 300.
+    \item Text is heavy if numPages $>$ 500.
+    \item Comic is heavy if numPages $>$ 30.
+\end{itemize}
+\begin{lstlisting}
+class Book {
+    protected:
+    int numPages;
+    public:
+    bool isHeavy() const;
+};
+
+bool Book::isHeavy() const { return numPages > 300; }
+bool Text::isHeavy() const { return numPages > 500; }
+
+////
+
+Book b{"Title", "author", 200};
+b.isHeavy(); // Book::isHeavy, false
+Comic c{"Batman", "Nomair", 40, "Nomair"};
+c.isHeavy(); // Comic::isHeavy, true
+Book b = Comic{stuff} // this line calles the Book's copy constructor
+b.isHeavy() // Book::isHeavy, false
+\end{lstlisting}
+
+\subsection{Object Slicing/Coercion}
+\begin{lstlisting}
+Book *bp{&c};
+bp->isHeavy();
+\end{lstlisting}
+No object slicing, this line calls Book::isHeavy because the compiler says so, and looks at the declared type of bp.
+
+\section{Destructor, Virtual, Template}
+\subsection{Destructors with Inheritance}
+Steps for object destruction:
+\begin{enumerate}
+    \item Subclass destructor body runs
+    \item Destructor runs for subclass fields that are objects
+    \item Superclass destructor runs
+    \item Space is deallocated
+\end{enumerate}
+\textbf{Examples:}
+\begin{lstlisting}
+class X {
+    int *x;
+    public:
+        X(int n): x{new int[n]} {}
+        ~X() { delete [] x; }
+};
+
+class Y: public X {
+    int *y;
+    public:
+        Y(int n, int m): X{n}, y{new int[m]} {}
+        ~Y() { delete [] y; }
+};
+
+// Run with Valgrind
+int main() {
+    X x{5};
+    Y y{5, 10};
+    
+    X *xp = new Y{5, 10};
+    delete xp; 
+}
+\end{lstlisting}
+Problem:Which destructor runs? X's destructor runs as xp points to x*. However, this deallocates int *x, and not int *y. y leaks!
+
+Solution: Make destructor virtual. 
+Tip: Always make the base class's destructor virtual. This applies even when the default constructor runs.
+
+If a class will never have subclasses, declare the class "find".
+\begin{lstlisting}
+Class Y find public X {
+};
+\end{lstlisting}
+Note: \lstinline{finds} is a keyword in this context only. 
+\subsection{Pure Virtual}
+\begin{lstlisting}
+class Student {
+    virtual int fees();
+};
+
+class Regular: public Student {
+    int fees() override {}
+};
+
+class Coop: public Student {
+    int fees() override {}
+};
+
+// Student::fees() has no implementation. The compiler will throw an error unless we use a pure virtual method. 
+
+class Student {
+    virtual int fees() = 0; // Now this is a pure virtual function!
+}
+\end{lstlisting}
+A subclass MUST implement pure virtual methods to be considered concrete.
+\begin{lstlisting}
+Student s{};
+\end{lstlisting}
+This does not compile because \lstinline{fees()} is not implemented.
+\begin{itemize}
+    \item Class is incomplete
+    \item This class is \textbf{abstract}
+\end{itemize}
+What makes a class abstract? A class is abstract if
+\begin{itemize}
+    \item it declares a pure virtual method
+    \item it inherits a pure virtual method that it does not override
+\end{itemize}
+If a class is not abstract, it is \textbf{concrete}.
+\\ Abstract base classes are useful for:
+\begin{itemize}
+    \item organizing subclasses
+    \item declaring fields/methods common to all students
+    \item still using polymorphism \\
+    i.e We can declare a \lstinline{Student *student[3600];} We don't know what kind of student they are.
+\end{itemize}
+\textbf{UML}
+\begin{itemize}
+    \item Virtual/PV methods - italics
+    \item abstract           - class name in italics
+    \item protect            - \#
+\end{itemize}
+\subsection{C++ Templates}
+\begin{lstlisting}
+// Stack of ints
+class Stack {
+    int *contents;
+    int length;
+    int capacity;
+    public:
+        Stack();
+        void push(int x);
+        void pop();
+        int top();
+        ~Stack();
+};
+\end{lstlisting}
+But what if we want a stack of strings, polynomials, etc.?
+C++ Template Class is parameterized on one or more types.
+\begin{lstlisting}
+template <typename T>
+
+class Stack {
+    T *contents;
+    int length;
+    int capacity;
+    public:
+        Stack();
+        void push(T x);
+        void pop();
+        T top();
+        ~Stack();
+};
+
+Stack s; // Does not compile. Expects a type but no type is provided.
+
+Stack <int> s; // Defines a stack of integers. Intuitively, this copies code + replaces with int.
+s.push(1);
+
+Stack <char> s2; // This occurs at runtime
+s2.push('o');
+
+\end{lstlisting}
+//
+Recall our list with Iterator
+\begin{lstlisting}
+template <typename T>
+
+class List {
+    struct Node {
+        T data;
+        Node *next;
+    };
+    Node *theList = nullptr;
+    
+    public: 
+        class Iterator {
+            Node *curr;
+            Iterator(Node *)
+            public:
+                T operator*(); // Return type T
+                Iterator &operator++();
+                bool operator!=(...);
+                friend class List<T>; // Whenever we reference List, we must do List<T>
+        };
+        void addInFront(T *);
+        T itr(int i);
+        ~List();
+};
+List<int> li;
+li.addInFront(1);
+
+List<List<int>> l2;
+l2.addToFront(li);
+\end{lstlisting}
+
+\subsection{STL: Standard Template Library}
+STL is a collection of standard template classes. 
+For dynamic length arrays, we can use \lstinline{std::vector}
+\begin{itemize}
+    \item parameterized as one type
+    \item stack allocated
+\end{itemize}
+\begin{lstlisting}
+#include <vector>
+vector<int> v{3,4}; // [3,4]
+v.emplace_back(s) // [3,4,5]
+\end{lstlisting}
+Vectors internally use a heap array. How do we iterate over vectors?
+\begin{lstlisting}
+for (int i = 0l i < v.size(); ++i) {
+    ...
+}
+\end{lstlisting}
+We can also do:
+\begin{lstlisting}
+for (vector<int>::iterator it = v.begin(); it != v.end(); ++i) {
+    ...
+}
+
+for (auto &n: v) {
+    ++n;
+}
+
+// Reverse iteration
+for (vector<int>::reverse_iterator it = r.begin(); it != v.end(); ++it) {
+    ...
+}
+v.pop_back(); // We can use vectors as a stack
+v.erase(v.begin()); // Remove first element - like a queue
+v.erase(v.begin() + 3); // Remove first element. Erase invalidates existing Iterators
+\end{lstlisting}
+\section{Design Patterns}
+Now that we have discussed abstract classes, we can move further with design patterns. Many patterns share the same strategy: program to an interface, not an implementation
+\begin{itemize}
+    \item Create abstract base classes to define the interface
+    \item Work with pointers to these abstract base classes - recall that they can point to any concrete subclasses
+\end{itemize}
+\subsection{Revisiting the Interator Design Pattern}
+Recall our TODO list: \lstinline{operator*, operator++, operator!=}. We will provide an abstract Iterator that provides an interator
+\begin{lstlisting}
+class AbsItr {
+    public:
+        virtual int &operator*() const = 0;
+        virtual AbsItr operator++() const = 0;
+        virtual bool operator!=(const AbsItr &) const = 0;
+        virtual ~AbsItr() {}
+};
+
+class List {
+    struct Node;
+    Node *theList = nullptr;
+    public:
+        class Iterator : public AbsItr {
+            // override the inherited methods
+        };
+};
+
+class Set {
+    // some code
+    public:
+        class Iterator : public AbsItr {
+            // override the inherited methods
+        };
+};
+\end{lstlisting}
+
+\subsubsection{Example of coding to an interface}
+\begin{lstlisting}
+template <typename Fn> // function or parameter
+void foreach(AbsItr &start, const AbsItr &end, Fn f) {
+    while (start != end) {
+        int &tmp = *start;
+        f(tmp);
+        ++start;
+    }
+}
+\end{lstlisting}
+\lstinline{foreach} uses the functions of what AbsItr points at! This is useful because
+\begin{itemize}
+    \item The types of start and end are abstract (we can use \lstinline{foreach} for both list and set objects)
+    \item Uses \lstinline{++, !=, ++}
+\end{itemize}
+How do we call this?
+\subsubsection{Example}
+\begin{lstlisting}
+void addFive(int &n) { n += 5; }
+////
+List::Iterator lbegin = list.begin();
+foreach(lbegin, list.end(), addFive); // the compiler recognizes the type of f, we pass addFive as a parameter
+Set::Iterator sbegin = set.begin();
+foreach(sbegin, set.end(), addFive);
+\end{lstlisting}
+Some observations:
+\begin{itemize}
+    \item The function must be one parameter
+    \item We could use templates for any type
+\end{itemize}
+
+\subsection{Observer Pattern}
+\begin{itemize}
+    \item Push notification use observer pattern - tells you when an event occurred
+    \item We call this a publish/subscribe model
+    \begin{itemize}
+        \item The publisher is the subject
+        \item The subscriber is the observer
+    \end{itemize}
+\end{itemize}
+\subsubsection{Example - SpreadSheets}
+\begin{itemize}
+    \item When we change a data point, the table automatically updates
+    \item The table is the observer
+    \item The cells are the subjects
+\end{itemize}
+The UML is as follows: Subject and Observer are the base classes, and Subject HAS-A Observer. ConcreteSubject and Concrete Object inherit from their respective base classes. ConcreteObserver HAS-A ConcreteSubject. ConreteSubject must have a public \lstinline{getState()} method.
+\begin{lstlisting}
+// subject.h
+class Subject {
+    vector<Observer *> observers;
+    public:
+        Subject();
+        void attach(Observer *o);
+        void detach(Observer *o);
+        void notifyObservers();
+        virtual ~Subject() = 0; // to make the class abstract
+};
+// subject.cc
+Subject::Subject() {}
+Subject::~Subject() {} // must be implemented even though it's abstract
+
+void Subject::attach(Observer *o) { observers.emplace_back(o); }
+
+void Subject::detach(Observer *o) {
+    for (auto it = observers.begin(); it != observers.end(); ++it) {
+        if (*it == o) {
+            observers.erase(it);
+            break;
+        }
+    }
+}
+
+// observer.h
+class Observer {
+    public:
+        virtual void notify() = 0;
+        virtual ~Observer();
+};
+
+// observer.cc
+Observer::~Observer() {}
+
+// horse.cc, merged with .h for conciseness
+class HorseRace : public Subject {
+    std::fstream in;
+    std::string lastWinner;
+    
+    bool runRace() {
+        bool result = in >> lastWinner;
+        if (result) std::cout << lastWinner;
+        return result;
+    }
+    
+    std::string getState() { return lastWinner; }
+};
+
+\end{lstlisting}
+
+\subsection{Decorator Pattern}
+\begin{itemize}
+    \item Decorate objects - modify the behaviour of existing obejcts
+    \item Example: Adding a toolbar to the browser
+\end{itemize}
+Heirarchy is as follows:
+\begin{itemize}
+    \item BaseAbstractObject - public operation
+    \begin{itemize}
+        \item BaseObject : public BaseAbstractObject - public operation
+        \item Decorator (Abstract) : public BaseAbstractObject - HAS-A BaseAbstractClass 
+        \begin{itemize}
+            \item Decoration1 : public operation
+            \item Decoration2: ...
+        \end{itemize}
+    \end{itemize}
+\end{itemize}
+\subsubsection{Example: Browser Window}
+\begin{lstlisting}
+AbsWindow *p = new ConWindow; // base object
+if (user adds scrollbar) {
+    p = new Scrollbar{p}; // decoration
+} else if (user adds toolbar) {
+    p = new Toolbar{p}; // decoration
+}
+
+p->render(); // recursive, render is the operation
+\end{lstlisting}
+
+\subsection{Factory Method Pattern}
+Consider the following example classes:
+\begin{itemize}
+    \item Enemy (Abstract)
+    \begin{itemize}
+        \item Turtle
+        \item Bullet
+    \end{itemize}
+    \item Level (Abstract)
+    \begin{itemize}
+        \item Normal
+        \item Castle
+    \end{itemize}
+\end{itemize}
+\begin{lstlisting}
+Player *p;
+Enemy *e;
+Level *l;
+
+while (p->notDead()) {
+    e = l->createEnemy();
+}
+
+class Level {
+    virtual Enemy *createEnemy() = 0;
+};
+
+Enemy *Normal::createEnemy() override { more turtles }
+Enemy *Castle::createEnemy() override { more bullets }
+\end{lstlisting}
+
+\subsubsection{Virtual Constructor Pattern}
+Delegating construction of objects to the same factory. For example, \lstinline{addToFront} in \lstinline{List} was a factory of \lstinline{Node}s, \lstinline{begin} and \lstinline{end} in Iterator are factories of Iterator
+
+\section{Exceptions}
+Recall the standard vector class.
+\begin{lstlisting}
+vector<int> v;
+v[i];
+\end{lstlisting}
+If \lstinline{i} is not in range, we have undefined behaviour. To fix this, we can do what is called check access.
+\subsection{Example}
+\begin{lstlisting}
+std::vector<T>::at(int)
+v.at(i); // checked access
+
+// client.cc
+vector<int> v;
+v.at(i);
+if (errno) { handle error }
+\end{lstlisting}
+\subsection{Better Example}
+We include \lstinline{<stdexcept>}, and use try-catch blocks
+\begin{lstlisting}
+void f() {
+    cout << "Start f" << endl;
+    throw(out_of_range("f"));
+    cout << "Finish f" << end;
+}
+
+void g() {
+    cout << "Start g" << endl; f(); cout << "Finish g" << endl;
+}
+
+void h() {
+    cout << "Start h" << endl; g(); cout << "Finish h" << endl;
+}
+
+int main() {
+    cout << "Start main" << endl;
+    try {
+        h();
+        cout << "Done try" << endl;
+    } catch(out_of_range) {cerr << "range error" << endl; }
+    cout << "Done main";
+}
+\end{lstlisting}
+The output is
+\begin{itemize}
+    \item Start main
+    \item Start h
+    \item Start g
+    \item Start f
+    \item range error
+    \item Done main
+\end{itemize}
+\lstinline{f} keeps throwing until it finds a try catch block!
+\subsection{Error Recovery}
+Error recovery can be done in stages.
+\subsubsection{Example}
+\begin{lstlisting}
+foo() {
+    try {
+        // some code
+    } catch(SomeError e) {
+        // do some part of the recovery
+        throw OtherException {...};
+    }
+}
+\end{lstlisting}
+Some ways to handle error recovery:
+\begin{itemize}
+    \item Throw a different exception from the catch block
+    \item Throw the exception caught - \lstinline{throw e}
+    \item Throw the original exception - \lstinline{throw}
+    \item There is a subtle difference between the last two! %TODO what is the difference?
+\end{itemize}
+\subsection{Exception Classes}
+\begin{itemize}
+    \item C++ library exceptions inherit from \lstinline{std::exception}
+    \item We can create exception classes that do not inherit from anything
+    \item C++ allows throwing anything
+\end{itemize}
+Advice: Use existing exception classes or create your own
+\subsubsection{Example}
+\begin{lstlisting}
+class BadInput {};
+int n = 0;
+try {
+    if (!(cin >> n)) throw BadInput();
+} catch (BadInput &BI) { // catching by reference avoids slicing and copying
+    n = 0;
+}
+\end{lstlisting}
+\subsection{Some types of Exceptions}
+\begin{itemize}
+    \item \lstinline{out_range}: thrown by \lstinline{vector::at}
+    \item \lstinline{bad_alloc}: new fails to allocate memory
+    \item \lstinline{length_error}: unable to change length
+\end{itemize}
+Destructors should not throw exceptions. WHY? \\
+Default behaviour: If a destructor throws an exception the program calls \lstinline{std::terminate} and stops.  \\
+We can change the default.
+\begin{lstlisting}
+~Node() noexcept(false) {
+    ...
+} // we can add exceptions to destructors. Doesn't mean we should 
+\end{lstlisting}
+An exception as occurred..
+\begin{itemize}
+    \item The stack is unwinding (look for catch block)
+    \item Destructors for stack-allocated objects are being called
+    \item The destructor throws an exception
+\end{itemize}
+We then have 2 simultaneous uncaught exceptions. \lstinline{std::terminate} will be called and program quits.
+
+\section{Big 5 Revisited}
+\textbf{Destructors}: Base class destructors are virtual
+\begin{lstlisting}
+class Book {
+    public:
+        // Custom big 5 implemented
+};
+
+class Text : public Book {
+    // Big 5 not implemented
+};
+
+Text a{title, author, pages, topic};
+Text b{a}; // Will call built-in free copy constructor
+\end{lstlisting}
+\textbf{Default copy constructor:}
+\begin{lstlisting}
+Text::Text(const Text &author):
+    Book{other}, topic{other.topic} {}
+\end{lstlisting}
+
+\textbf{Default/Built-in copy assignment operator}
+\begin{lstlisting}
+a = b // call default Text::operator=
+
+Text &Text::operator=(const Text &other) {
+    Book::operator=(other); // superclass
+    topic = other.topic;
+    return *this;
+}
+\end{lstlisting}
+Tip: Do superclass in MIL first, then do subclass
+\\
+
+\textbf{Move constructor:}
+\begin{lstlisting}
+Text::Text(Text &&other):
+    Book{other}, topic{other.topic} {}
+\end{lstlisting}
+This will recompile, but it is incorrect implementation. The object that gets constructed is a copy of the objected being destroyed. This is not as efficent.
+\\ We need to treat other as a r-value.
+How do we resolve this?
+\\ C++ has the function \lstinline{std::move} which tacks an l-value and returns an r-value.
+Let's implement move constructor again.
+\begin{lstlisting}
+// Move Constructor
+Text::Text(Text &&other):
+    Book{std::move(other)},
+    topic{std::move(other.topic)} {}
+
+// Move assignment operator
+Text &Text::operator=(Text &&other) {
+    Book::operator=(std::move(other));
+    topic = std::move(other.topic);
+    return *this;
+}
+\end{lstlisting}
+Consider the assignment operator in detail.
+\begin{lstlisting}
+Text t1{"Mechanics", "Nomair", 50, "Physics"};
+Text t2{"C++", "Brad", 500, "CS"};
+
+Book *pt1{*t1};
+Book *pt2{&t2};
+*pt1 = *pt2 // NOT ptr assignment. This is the assigment operator for objects. We can use pointers to achieve object assignment. Which one gets called? Book's assignment operator is called because declared type of pt1 is a Book.
+\end{lstlisting}
+This is known as the Partial Assignment Problem. What is the solution? Last time we used virtual.
+\textbf{Intent:} Compile finds book's copy constructor, sees virtual, and waits until runtime. At runtime, the right operator is called. But this fails.
+\begin{lstlisting}
+class Book{
+    ...
+    virtual Book &operator=(const Book&);
+};
+
+class Text {
+    ... 
+    Text &operator = (const Text &) override;
+};
+\end{lstlisting}
+This fails because override is not an actual override. We need the operator to be able to take any book. This introduces the \textbf{Mixed Assignment Pattern}.
+
+\begin{lstlisting}
+Text t = ...;
+Comic c = ...;
+* = c; // How do we get topic from parent class?
+\end{lstlisting}
+Alternate solution (sort of)
+\begin{itemize}
+    \item Disallow assignment through base class pointers
+    \item Option 1: Make \lstinline{Make Book::operator=} private
+    \begin{itemize}
+        \item Problem: Disallows ALL assignments includin subclass assignments
+    \end{itemize}
+    \item Option 2: Make \lstinline{Make Book::operator=} protected
+    \begin{itemize}
+        \item Problem: Disallows assignment of Book objects
+    \end{itemize}
+    \item Make abstract base class with protected \lstinline{operator=}
+    \begin{itemize}
+        \item Goal achieved!
+    \end{itemize}
+\end{itemize}
+\begin{lstlisting}
+AbsBook *ap1 = ...; // Wont's compile because = operator is protected
+AbsBook *ap2 = ...;
+* ap1 = *ap2; // Goal achieved!
+\end{lstlisting}
+
+\section{Design Patterns (Again)}
+
+\subsection{Template Design Pattern}
+The base class provides some functionality where subclasses may/must provide parts of the behaviour.
+
+\begin{lstlisting}
+class Turtle {
+    public:
+    void draw() { // not virtual, saying this is the only way to draw turtle
+        drawHead();
+        drawShell();
+        drawFeet();
+    }
+    private:
+    void drawHead() {code here}
+    void drawFeet() {code here}
+    virtual void drawShell() = 0;
+};
+\end{lstlisting}
+Subclasses fill in the blanks of the base class. In this case, the blank is \lstinline{drawShell()}.
+
+\begin{lstlisting}
+class RedTurtle : public Turtle {
+    void drawShell() override { // draw red shell}
+};
+\end{lstlisting}
+
+\subsection{NVI (non-virtual interface) Idiom}
+
+A generalization of the template method pattern. Consider a \lstinline{public virtual} method.
+\begin{itemize}
+    \item \lstinline{public}: part of the interface, come with pre/post conditions - guarantee certain behaviour
+    \item \lstinline{virtual}: an invitation to subclasses to change behaviour
+\end{itemize}
+
+In a NVI interface implementation, all \lstinline{public} methods are non \lstinline{virtual} (except the destructor), and all \lstinline{virtual} methods are \lstinline{private/protected}.\\\\ We will go through an implemntation with and without NVI.
+
+\begin{lstlisting}
+// not NVI
+class DigitialMedia { // abstract base class
+    public:
+    virtual void play() = 0;
+    virtual ~DigitalMedia();
+};
+
+// with NVI
+class DigitalMedia {
+    public:
+    void play() {
+        doPlay();
+    }
+    virtual ~DigitalMedia() {}
+    private:
+    virtual void doPlay() = 0;
+};
+\end{lstlisting}
+
+People argue why NVI is better argue that with NVI, the original creator has more control. Without NVI, anyone who makes a subclass has complete control.
+
+\subsection{STL: map template class}
+Parameterized on two types: Key, Value $\to$ a dictionary. A generalization of an array/lookup table with one restriction: the Key should support \lstinline{operator<}.
+\begin{lstlisting}
+map<string, int> m;
+m["abc"] = 5;
+m["def"] = 42;
+cout << m["def"]; // prints 42
+m.erase("def");
+if (m.count("abc")) // returns 0 if not found, 1 if found
+for (auto &p : m) //p has type std::pair<string, int>{
+    cout << p.first << p.second;
+}
+cout << m["xyz"]; // what happens here? the default value returned (which is 0 in this case)
+\end{lstlisting}
+
+\subsection{Visitor Design Pattern}
+There are two reasons for this design pattern.
+\begin{enumerate}
+    \item Ability to do Double Dispatch
+\begin{lstlisting}
+virtual void Enemy::strike(Stick &) = 0;
+virtual void Enemy::strike(Rock &) = 0;
+
+////////////////////////////////////////
+
+Enemy *e = l->createEnemy();
+Weapon *w = player->chooseWeapon();
+e->strike(*w);
+// the issue is that w is type weapon, but we don't have a strike method for a general weapon - dynamic dispatch only occurred on e - C++ and other languages do not dynamically dispatch on parameters
+
+////////////////////////////////////////
+
+class Enemy {
+    public:
+    virtual void strike(Weapon &w) = 0;
+};
+
+class Turtle : public Enemy {
+    void strike(Weapon &w) { w.useOn(*this); } // now the compiler knows *this must be a turtle, which is important to do overloading
+};
+
+class Bullet : public Enemy {
+    void strike(Weapon &w) {}
+};
+
+class Weapon {
+    public:
+    virtual void useOn(Bullet &) = 0;
+    virtual void useOn(Turtle &) = 0;
+};
+\end{lstlisting}
+
+\item Adding functionality to class hierarchy without adding code to the classes. (see lectures/se/visitor)
+\end{enumerate}
+
+To summarize, the visitor design pattern uses double dispatch - to figure out both the type of the object and the type of the parameter to end up in the right method.
+
+\section{Compilation Dependencies, Design Strategies}
+
+\subsection{Compilation Dependencies}
+An \lstinline{include} cretes a compilation dependency. Ever time an included file changes, we must recompile. Thus, we should avoid including headers as much as much.
+\begin{itemize}
+    \item Prefer to forward declare classes such as \lstinline{class xyz;} instead of including
+    \item A forward declaration of a class is a primise that the type will exist, while the include gives the entire definition
+\end{itemize}
+\textbf{Advantages of forward declaration}
+\begin{itemize}
+    \item Reduce compilation dependencies (avoid include cycles)
+    \item Fewer compilations
+    \item Faster compile time
+\end{itemize}
+\begin{lstlisting}
+// a.h
+class A{};
+
+// b.h
+#include "a.h"
+class B: public A {
+};
+
+// c.h 
+#include "a.h"
+class C {
+    A a;
+};
+
+// d.h
+class A;
+class D{
+    A *myA;
+};
+
+// d.cc
+#include "a.h"
+void D::foo() {
+    myA->bar();
+}
+
+// e.h
+class A;
+class E {
+    A foo(A);
+}
+\end{lstlisting}
+
+\subsection{Design Strategy}
+
+\subsubsection{pImpl Idiom}
+The idea behind the pointer to implementation (pImpl) idiom is to take everything that is \lstinline{private} and put it in another implementation class. For example:
+
+\begin{lstlisting}
+// windowImpl.h
+#include <Xlib/Xlib.h>
+struct XWindowImpl {
+    Display *d;
+    Window w;
+};
+
+// window.h
+struct XWindowImpl;
+class Window {
+    XWindowImpl *pImpl;
+    public:
+    void drawRectangle();
+    void drawString();
+};
+
+// window.cc
+#include "XWindowImpl.h"
+XWindow::XWindow() : pImpl{new XWindowImpl} {}
+
+XWindow::~XWindow() { delete pImpl; }
+\end{lstlisting}
+
+With this change, client.cc does not need to recompile if the implementation changes.
+
+\textbf{Generalization: Bridge Design Pattern}
+An extension of the pImpl idiom to accomodate multiple implementations. Recall from CS136 that:
+\begin{itemize}
+    \item Coupling: how modules interact with each other - aim for low coupling
+    \item Cohesion: how related are members within a module - aim for high coupling
+\end{itemize}
+
+\textbf{Decoupling the interface (MVC Design Pattern)}\\
+The MVC Design Pattern splits the code into 3 components: the model, view, and controller.
+\begin{itemize}
+    \item The Model is the actual data representation (i.e., an array or a vector). For example, a vector of players, cells, or links
+    \item The View is an interface to reading the model. For example, a GUI.
+    \item The Controller handles changing or modifying the data. For example, a game controller that handles the data every turn
+\end{itemize}
+
+\textbf{Single Responsibility Principle}
+Every class should have only one reason to change.
+
+\section{Exception Safety}
+Consider the following function:
+\begin{lstlisting}
+void f() {
+    MyClass *p = new MyClass;
+    MyClass mc;
+    g();
+    delete p;
+}
+\end{lstlisting}
+Assume g does not leak memory, and the deletion of p does not leak memory either. If g throws an exception, you may still leak memory.
+\subsection{Exception Safety}
+Our program should recover from exceptions, have no memory leaks, no dangling pointers, and no broken invariants.
+\subsection{C++ Guarantee}
+During stack unwinding, all stack allocated data is destroyed (objects' destructors are run). This is the only guarantee that C++ provides. However, C++ will not automatically call delete on p.
+\begin{lstlisting}
+void f() {
+    MyClass *p = new MyClass;
+    try {
+        MyClass mc;
+        g();
+    } catch (...) {
+        delete p;
+        throw;
+    }
+    delete p;
+}
+\end{lstlisting}
+The above fix is quite tedious and error-prone, especially for large, nested pieces of code. What do we do when we must use heap memory?
+\subsection{RAII: Resource Acquisition Is Initialization}
+\begin{itemize}
+    \item Wrap any resource within a stack-allocated object whose destructor releases the resource
+    \item Heap memory is a resource
+\end{itemize}
+Using RAII for heap memory:
+\begin{lstlisting}
+#include <memory>
+std::unique_ptr<T>
+\end{lstlisting}
+\begin{itemize}
+    \item constructor takes a T*
+    \item destructor will delete the T*
+    \item overloads for \lstinline{operator*} and \lstinline{operator->}
+\end{itemize}
+\begin{lstlisting}
+void f() {
+    std::unique_ptr<MyClass> p{new MyClass};
+    MyClass mc;
+    g();
+}
+\end{lstlisting}
+If ownership is shared then we have:
+\begin{lstlisting}
+std::shared_ptr<T>
+shared_ptr<MyClass> p = make_shared<MyClass> ();
+if () {
+    shared_ptr<MyClass> q = p;
+} // q goes out of scope
+\end{lstlisting}
+\subsection{Three Levels of Exception Safety}
+\begin{itemize}
+    \item Basic guarantee: If an exception occurs, the program is in a valid bu unspecified state (meaning we do not know how much the program has executed)
+    \item Strong guarantee: If an exception occurs while calling a function \lstinline{f}, it will be as if \lstinline{f} was never called
+    \item No throw guarantee: the function will not throw an exception and will achieve its task
+\end{itemize}
+It is often difficult to determine what kind of guarantee a function has. For example, assume \lstinline{method1} and \lstinline{method2} have a strong guarantee.
+\begin{lstlisting}
+class A { some code};
+class B { some code};
+class C {
+    A a;
+    B b;
+    void f () {
+        a.method1();
+        b.method2();
+    }
+};
+\end{lstlisting}
+What kind of guarantee does \lstinline{f} have?
+\begin{itemize}
+    \item \lstinline{f} does not have a no throw guarantee, since either of \lstinline{method1} or \lstinline{method2} could throw, and \lstinline{f} would not catch
+    \item Assume \lstinline{method1} ran and didn't throw. If \lstinline{method2} throws and we cannot reverse the effects of what \lstinline{method1} did, then \lstinline{f} no longer has a strong guarantee.
+    \begin{itemize}
+        \item The following example shows that even when we can revert some of the changes back, there is still no strong guarantee
+    \end{itemize}
+\end{itemize}
+\begin{lstlisting}
+void C::f() {
+    A aCopy{a};
+    B bcopy{b};
+    aCopy.method1();
+    bCopy.method2();
+    a = aCopy;
+    b = bCopy;
+}
+\end{lstlisting}
+We attempted to write code such that if one of the methods throw, \lstinline{a} and \lstinline{b} have not changed. There is still no strong guarantee, since \lstinline{a = aCopy;} can run correctly but \lstinline{b = bCopy;} can throw. 
+
+
+\subsection{STL: Vector class}
+\lstinline{vector} is an example of RAII
+\begin{lstlisting}
+vector<MyClass> v;
+// When the internal array is destroyed, each element is destroyed
+//////
+
+vector<MyClass *> v;
+// when the array is destroyed, each element (which is a pointer) is destroyed
+// NOTE: this does not mean deleting a pointer
+// The object this pointer points to still exists!
+
+//////
+vector<Observer *> observers;
+// In the case where elements are pointers to heap objects ANd the code owns these objects, we do:
+for (auto &e: v) delete e;
+
+// without using delete:
+vector<unique_ptr<MyClass>> v;
+vector<T>::emplace_back // has a strong guarantee
+\end{lstlisting}
+
+We can mark methods with a no throw guarantee as follows:
+\begin{lstlisting}
+class A {
+    public:
+        void f() noexcept {}
+};
+\end{lstlisting}
+\end{document}
