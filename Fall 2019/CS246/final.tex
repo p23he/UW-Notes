@@ -1225,4 +1225,107 @@ class A {
         void f() noexcept {}
 };
 \end{lstlisting}
+
+\section{Casting}
+Casting is the process of forcing one data type to be converted into another. Types of casting:
+\begin{enumerate}
+    \item General casting: \lstinline{(type) expression}
+    \item \lstinline{static_cast}
+    \item \lstinline{const_cast}
+    \item \lstinline{dynamic_cast}
+    \item \lstinline{reinterpret_cast}
+\end{enumerate}
+
+\subsection{Static Cast}
+\lstinline{static_cast<Type> (Expression)}: 
+\begin{itemize}
+    \item Takes in a type and returns the equivalent value of type \lstinline{Type}
+    \item Can be used for non-polymorphic downcasting from a parent pointer to a child pointer
+    \item Does not change the value of variable in expression
+\end{itemize}
+
+
+\subsection{Const Cast}
+\lstinline{const_cast<Type> (Expression)}:
+\begin{itemize}
+    \item This is used to explicitly override \lstinline{const}/ \lstinline{volatile} in a cast
+    \item Target type must be the same.
+    \item Used to either set or remove the \lstinline{const} attribute
+\end{itemize}
+\begin{lstlisting}
+void g(int *p);
+void f(const int *p) {
+    g(const_cast(p));
+}
+\end{lstlisting}
+
+\subsection{Dynamic Cast}
+\lstinline{dynamic_cast<Type> (Expression)}:
+\begin{itemize}
+    \item Type-safe form of downcasting by verifying the validity of the cast at runtime
+    \item Performs polymorphic downcasting from a parent pointer to a child pointer
+    \item Returns \lstinline{nullptr} if it fails (i.e. pointer does not point to the type specified)
+    \item Safer than \lstinline{static_cast}, but less efficient
+    \item Only works on polymorphic classes (have at least one virtual method)
+\end{itemize}
+
+\subsection{Reinterpret Cast}
+\lstinline{reinterpret_cast<Type> (Expression)}:
+\begin{itemize}
+    \item Changes a poiner to any other type of pointer
+    \item Allows casting from pointer to an integer type and vice versa
+    \item This is an implementation-dependent cast and is unsafe
+\end{itemize}
+\begin{lstlisting}
+Student s; 
+
+// Force student to be treated like a turle :(
+Turtle *t = reinterpret_cast<Turtle*>(&s);
+\end{lstlisting}
+
+\subsection{Downcasting}
+\begin{itemize}
+    \item Not recommended because we might downcast into a wrong type
+    \item Use polymorphism instead whenever possible
+    \item If we must downcast, use \lstinline{dynamic_cast} for a type-safe downcast operation (since it returns \lstinline{nullptr} if cast is not proper
+\end{itemize}
+\begin{lstlisting}
+Pet *b = new Cat; // upcast
+Dog *d1 = dynamic_cast<Dog*>(b); // returns nullptr;
+Cat *c1 = dynamic_cast<Cat*>(b); // ok
+\end{lstlisting}
+
+\textbf{Downcasting References}
+\begin{itemize}
+    \item This is exception safe because it returns \lstinline{nullptr} if wrong type
+    \item If we try to \lstinline{dynamic_cast} a reference variable of the wrong type, \lstinline{dynamic_cast} will throw a \lstinline{bad_cast} because there is no such thing as a null reference.
+\end{itemize}
+
+\subsection{Run-Time Type Information (RTTI)}
+RTTI is the ability to provide information about the tye of dynamic-typed object at runtime.
+
+\begin{itemize}
+    \item \lstinline{dynamic_cast} is a form of RTTI
+    \item We can also Use \lstinline{typeid} and
+    \lstinline{static_cast} to downcast. 
+    \begin{itemize}
+        \item \lstinline{typeid} returns a reference to a \lstinline{std::type_info} object which can be used to compare objects/references/pointers with the desired type using \lstinline{==} and \lstinline{!=}. 
+        \item \lstinline{typeid(obj).name()} returns a string representation of the type name
+    \end{itemize}
+\end{itemize}
+\begin{lstlisting}
+Cricle c;
+Shape *s = &c; //Upcast
+if (typeid(Circle) == typeid(s)) s = static_cast<Shape*>(&c);
+\end{lstlisting}
+\textbf{Mechanisms of RTTI with Dynamic Cast}
+When \lstinline{dynamic_cast<destination*>(src)} is used:
+\begin{enumerate}
+    \item Source pointers RTTI info is retrieved
+    \item RTTI info of destination is fetched
+    \item Library routine then determine whether source pointers type is of destination type or base class type
+\end{enumerate}
+
+\textbf{Creating Your Own RTTI}: \\
+RTTI requires only a virtual function to identify the exact type of the class, and a function to take a pointer to the base type and cast it down to the derived type. This function produces a pointer of the derived type.
 \end{document}
