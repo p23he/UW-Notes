@@ -1,0 +1,276 @@
+\documentclass[12pt]{article}
+\usepackage{tasks}
+\usepackage{exsheets}
+\usepackage{amsmath}
+\usepackage{amsthm}
+\usepackage{amssymb}
+\usepackage{graphicx}
+\usepackage{tikz}
+\usetikzlibrary{trees}
+\SetupExSheets[question]{type=exam}
+\usepackage[legalpaper, portrait, margin=1in]{geometry}
+
+\usepackage{listings}
+\usepackage{color}
+
+\definecolor{dkgreen}{rgb}{0,0.6,0}
+\definecolor{gray}{rgb}{0.5,0.5,0.5}
+\definecolor{mauve}{rgb}{0.58,0,0.82}
+
+% Define block styles
+\tikzstyle{decision} = [diamond, draw, fill=blue!20, 
+    text width=4.5em, text badly centered, node distance=3cm, inner sep=0pt]
+\tikzstyle{block} = [rectangle, draw, fill=blue!20, 
+    text width=5em, text centered, rounded corners, minimum height=4em]
+\tikzstyle{line} = [draw, -latex']
+\tikzstyle{cloud} = [draw, ellipse,fill=red!20, node distance=3cm,
+    minimum height=2em]
+
+\lstset{frame=tb,
+  language=C++,
+  aboveskip=3mm,
+  belowskip=3mm,
+  showstringspaces=false,
+  columns=flexible,
+  basicstyle={\small\ttfamily},
+  numbers=none,
+  numberstyle=\tiny\color{gray},
+  keywordstyle=\color{blue},
+  commentstyle=\color{dkgreen},
+  stringstyle=\color{mauve},
+  breaklines=true,
+  breakatwhitespace=true,
+  tabsize=3
+}
+
+\newcommand{\modelseq}{\models\!\mid}
+\newcommand{\comm}[1]{}
+\newcommand{\N}{\mathbb{N}}
+\newcommand{\code}{\lstinline}
+
+\renewcommand{\qedsymbol}{$\blacksquare$}
+
+\title{CS 245 Final Exam Practice Questions - Answers}
+\author{Peter He}
+\date{Fall 2019}
+
+\begin{document}
+
+\maketitle
+
+\section{Structural Induction}
+
+Question 2c) incomplete.
+
+\begin{enumerate}
+    \item 
+    \begin{tasks}
+        \task Let $X$ be the set of all triplets of natural numbers $(a,b,c)$. Let $A=\{(13,15,26)\}$. Let $P$ be the set of the operations \[\{(a,b,c)\mapsto (a-1,b-1,c+2),(a,b,c)\mapsto (a-1,b+2,c-1),(a,b,c)\mapsto (a+2,b-1,c-1)\}\] Let the set PebblePiles be $I(X,A,P)$.
+        \task
+            \begin{proof}
+                \underline{Basis:} Consider $15-13=2$. Trivially, $2\equiv 2\pmod{3}$.\\
+                \underline{Induction Hypothesis:} Let $(a,b,c)$ be a triplet such that $(b-a)\equiv 2\pmod{3}$.\\
+                \underline{Induction Step:} We go through each of the operations in $P$:
+                \begin{itemize}
+                    \item Consider the triplet $(a-1,b-1,c+2)$. We have that
+                    \begin{align*}
+                        (b-1)-(a-1)&=b-a-1+1\\
+                        &=b-a\\
+                        &\equiv 2\pmod{3}\qquad\text{by IH}
+                    \end{align*}
+                    \item Consider the triplet $(a-1,b+2,c-1)$. We have that
+                    \begin{align*}
+                        (b+2)-(a-1)&=b-a+2+1\\
+                        &=b-a+3\\
+                        &\equiv 2\pmod{3}\qquad\text{by IH}
+                    \end{align*}
+                    \item Consider the triplet $(a+2,b-1,c-1)$. Similarly, $(b-1)-(a+2)\equiv 2\pmod{3}$ by IH.
+                \end{itemize}
+                By the principle of structural induction, $(b-a)\equiv 2\pmod{3}$ for every element $(a,b,c)\in$ PebblePiles.
+            \end{proof}
+        \task We would like to prove that there does not exist an element $x\in$ PebblePiles such that $x$ is of the form:
+            \begin{itemize}
+                \item $(n,0,0)$,
+                \item $(0,n,0)$, or 
+                \item $(0,0,n)$ for some $n\in\mathbb{Z}_{\geq 1}$.
+            \end{itemize}
+            \begin{proof}
+                Let $(a,b,c)$ be an element in PebblePiles. It can be shown by structural induction that $(c-a)\equiv 1\pmod{3}$ and $(c-b)\equiv 2\pmod{3}$. So $a\neq b, b\neq c, c\neq a$. Thus, $(a,b,c)$ cannot be of the above forms.
+            \end{proof}
+    \end{tasks}
+
+    \item 
+    \begin{tasks}
+        \task Let $\mathbb{A}=\{p_i:i\in\mathbb{Z}_{\geq 1}\}$ and \[P\left\{\frac{x,y}{x\lor x},\frac{x,y}{x\land y},\frac{x,y}{x\to y}\right\}\].
+        \task 
+        \begin{proof}
+            \underline{Basis:} Let $A=p_i$ for some $i\in\mathbb{Z}_{\geq 1}$. By construction, $A^{v_1}=(p_i)^{v_1}=1$.\\
+            \underline{Induction Hypothesis:} Let $A, B\in P_{NoNot}$, and assume $A^{v_1}=B^{v_1}=1$.\\
+            \underline{Induction Step:} We go through each element in $P$.
+            \begin{itemize}
+                \item Consider $A\lor B$. By the IH and the truth table of $\lor$, $(A\lor B)^{v_1}=1$
+                \item Consider $A\land B$. By the IH and the truth table of $\land$, $(A\land B)^{v_1}=1$
+                \item Consider $A\to B$. By the IH and the truth table of $\to$, $(A\to B)^{v_1}=1$
+            \end{itemize}
+        \end{proof}
+        \task 
+        \begin{proof}
+            First, we construct a truth table for $A=(p_1\land \neg p_2)\lor (\neg p_1\land p_2)$.\\
+            \[\begin{array}{c|c|c}
+                p_1 & p_2 & (p_1\land \neg p_2)\lor (\neg p_1\land p_2)\\\hline
+                1 & 1 & 0\\
+                1 & 0 & 1\\
+                0 & 1 & 1\\
+                0 & 0 & 0
+            \end{array}
+            \]
+            By this truth table, $A=\neg (p_1\leftrightarrow q)$. \\
+            Let $I(X,\mathbb{A}', P)\subset P_{NoNot}$ where, WLOG, \[\mathbb{A}'\subseteq\mathbb{A}, \mathbb{A}'=\{p_1\land p_2, p_2\land p_1,p_1\lor p_2,p_2\lor p_1,p_1\to p_2, p_2\to p_1\}\]. We go by structural induction on this set.\\
+            \underline{Basis:} None of the truth tables for $\to$, $\land$, and $\lor$ are the same as $A$.\\
+            \underline{Induction Hypothesis:} Assume $\alpha,\beta\in I(X,\mathbb{A}', P)$ are formulas that are not tautologically equivalent to $A$.\\
+            \underline{Induction Step:} We go through each element in $P$.
+            \begin{itemize}
+                \item Consider $\alpha\land\beta$. For the sake of contradiction assume $\alpha\land\beta$ is tautologically equivalent to $A$. This implies, that for a valuation $t$ such that:
+                \begin{itemize}
+                    \item $p_1^t=p_2^t=1$, $\alpha^t=0$ or $\beta^t=0$, and
+                    \item $p_1$
+                \end{itemize}
+            \end{itemize}
+        \end{proof}
+    \end{tasks}
+\end{enumerate}
+
+\section{Formal Proofs in Propositional Logic}
+
+\begin{enumerate}
+    \item \underline{Basis ($n=1$):} We wish to show $\{(A_1\to A_2)\}\vdash (A_1\to A_2)$, which is a one line proof by $(\in)$.\\
+            \underline{Inductive Hypothesis:} Assume that $\{(A_1\to A_2),\dots,(A_{n-1}\to A_n)\}\vdash (A_1\to A_n)$.\\
+            \underline{Induction Step:} We wish to show $\{(A_1\to A_2),\dots,(A_n\to A_{n+1})\}\vdash (A_1\to A_{n+1})$.
+            \begin{proof}
+                \begin{align}
+                    \{(A_1\to A_2),\dots,(A_n\to A_{n+1})\} &\vdash (A_1\to A_n)&\text{by IH}\\
+                    \{A_1,(A_1\to A_2),\dots,(A_n\to A_{n+1})\} &\vdash (A_1\to A_n)&\text{by }(+, 1)\\
+                    \{A_1,(A_1\to A_2),\dots,(A_n\to A_{n+1})\} &\vdash A_1 &\text{by }(\in)\\
+                    \{A_1,(A_1\to A_2),\dots,(A_n\to A_{n+1})\} &\vdash A_n&\text{by }(\to -, 2,3)\\
+                    \{A_1,(A_1\to A_2),\dots,(A_n\to A_{n+1})\} &\vdash (A_n\to A_{n+1})&\text{by }(\in)\\
+                    \{A_1,(A_1\to A_2),\dots,(A_n\to A_{n+1})\} &\vdash A_{n+1}&\text{by }(\to -, 4, 5)\\
+                    \{(A_1\to A_2),\dots,(A_n\to A_{n+1})\} &\vdash (A_1\to A_{n+1})&\text{by }(\to +, 6)
+                \end{align}
+            \end{proof}
+    \item 
+        \underline{$\to$:} Assume $\vdash (A_1\to (A_2\to (A_3\to A_4)))$. Using Gao's/Collin's system, we have:
+        \begin{align}
+            &\vdash (A_1\to (A_2\to (A_3\to A_4)))\\
+            A_1 &\vdash (A_1\to (A_2\to (A_3\to A_4)))&\text{by }(+, 8) \\
+            A_1 &\vdash (A_2\to (A_3\to A_4))&\text{by }(\to -, 9) \\
+            A_1,A_2 &\vdash (A_2\to (A_3\to A_4))&\text{by }(+, 10) \\
+            A_1,A_2 &\vdash (A_3\to A_4)&\text{by }(\to -, 11) \\
+            A_1,A_2, A_3 &\vdash (A_3\to A_4)&\text{by }(+, 12) \\
+            A_1,A_2,A_3 &\vdash A_4&\text{by }(\to -, 13)\\
+            A_1,A_2,A_3 &\vdash A_2&\text{by }(\in )\\
+            A_1, A_3&\vdash (A_2\to A_4)&\text{by }(\to +, 14, 15) \\
+            A_1, A_3&\vdash A_1&\text{by }(\in) \\
+            A_3&\vdash (A_1\to (A_2\to A_4))&\text{by }(\to +, 16, 17) \\
+            A_3&\vdash A_3&\text{by }(\in) \\
+            &\vdash (A_3\to (A_1\to (A_2\to A_4)))&\text{by }(\to +, 18, 19)
+        \end{align}
+        \underline{$\leftarrow$:} Assume $\vdash (A_3\to (A_1\to (A_2\to A_4)))$. Using Shai's deduction theorem, we have 
+        \begin{itemize}
+            \item $\vdash (A_3\to (A_1\to (A_2\to A_4)))$ if and only if
+            \item $A_3 \vdash \to (A_1\to (A_2\to A_4))$ if and only if
+            \item $A_1, A_3\vdash (A_2\to A_4)$ if and only if
+            \item $A_1,A_2,A_3\vdash A_4$ if and only if
+            \item $A_1,A_2\vdash (A_3\to A_4)$ if and only if
+            \item $A_1\vdash (A_2\to (A_3\to A_4))$ if and only if 
+            \item $\vdash (A_1\to (A_2\to (A_3\to A_4)))$
+        \end{itemize}
+    \item Let $\beta=(\neg a)\land b\land c$. $\Sigma\not\!\models \beta$ since there is a valuation $t$ such that $\Sigma^t=1$ and $\beta^t=0$. Specifically, define $t$ such that \[a^t=b^t=c^t=1\]. By soundness of propositional logic, $\Sigma\nvdash \beta$.
+    \item 
+    \begin{proof}
+        Let $t$ be a valuation such that $\Sigma^t=1$. For the sake of contradicton, assume $c^t=0$. Then $(\neg a)^t=0$ since $(\neg a\to c)^t=1$, which implies $a^t=1$. This further implies that $b^t=1$ since $(a\to b)^t=1$. However, $b^t=0$ since $(b\to c)^t=1$. So $c^t=1$. By the truth table of $\to$, $(\neg c\to \gamma)^t=1$ for any formula $\gamma$. Thus, $\Sigma\models\gamma$, and by completeness of propositional logic, $\Sigma\vdash\gamma$.
+    \end{proof}
+\end{enumerate}
+
+\section{Consistency and Satisfiability of sets of formulas}
+
+\begin{enumerate}
+    \item \begin{proof}
+        Assume $\Sigma$ is satisfiable. Then there is a valuation $t$ such that $\Sigma^t=1$. There are two cases:
+        \begin{itemize}
+            \item Assume $\Sigma\cup\{\alpha\}$ is not satisfiable. Then $\alpha^t=0$ and $(\neg\alpha)^t=1$. Thus, $\Sigma\cup\{\neg\alpha\}$ is satisfiable. Specifically, it is satisfied by $t$.
+            \item Similarly, if $\Sigma\cup\{\neg\alpha\}$ is not satisfiable, $\Sigma\cup\{\alpha\}$ is satisfiable.
+        \end{itemize}
+    \end{proof}
+    \item Note that all propositional formulas are finitely long. Since $\alpha$ is over a finite amount of  atoms, let $\Sigma=\{u\to\alpha\}$, $u=p_i$ not occuring in $\alpha$.
+    \begin{itemize}
+        \item If $\alpha$ is satisfiable or a tautology, then choose a valuation $t$ such that $u^t=1, \alpha^t=0$. $\Sigma\cup\{\alpha\}$ is then not satisfiable, and by 1, $\Sigma\cup\{\neg\alpha\}$ is satisfiable.
+        \item If $\alpha$ is a contradiction, choose a valuation $t$ such that $t$ such that $u^t=1, \alpha^t=1$. $\Sigma\cup\{\neg \alpha\}$ is then not satisfiable, by 1, $\Sigma\cup\{\alpha\}$ is satisfiable.
+    \end{itemize}
+    \item Use the same set from 2.
+    \item \begin{proof}
+        Tutorial 5 Question 1.
+    \end{proof}
+    \item \begin{proof}
+        Tutorial 5 Question 2.
+    \end{proof}
+    \item It is not always the case. Consider $\Sigma=\{p\},\Sigma'=\{\neg p\}$, and $\beta=p\land p$. $\Sigma\cup\Sigma'$ is clearly inconsistent. $\Sigma\vdash\beta$ by $\land +$. $\Sigma'\models\neg\beta$, which can be shown by a truth table, so $\Sigma'\vdash\neg\beta$ by completeness of propositional logic. However, $\beta\notin\Sigma\cup\Sigma'$.
+    \item (Assignment 4 Question 2a) Let $\Sigma'=\{p,\neg q, (\neg p\lor q)\}$. For each pair $(A,B)\in\Sigma'$, it can be shown that $\{A,B\}$ is satisfiable.
+    \begin{itemize}
+        \item $\{p,\neg q\}$, choose $t$ such that $p^t=1, q^t=0$.
+        \item $\{p,(\neg p\lor q)\}$, choose $t$ such that $p^t=1=q^t=1$.
+        \item $\{\neg q,(\neg p\lor q)\}$, choose $t$ such that $p^t=q^t=0$.
+    \end{itemize}
+    By soundness of propositional logic, each of these sets are consistent.\\
+    However, it can be shown by truth table that $\Sigma'$ is not satisfiable. By completeness of propositional logic, $\Sigma'$ is not consistent.
+    \item For $k=3$, we can let $\Sigma''=\{p,q,\neg r, (\neg p\lor \neg q\lor r)\}$. It is clear that each pair can form a satisfiable set. It can also be shown by truth table that $\Sigma''$ is not satisfible.\\
+        For $k\geq 2$, let $\Sigma''=\{p_1,\dots, p_{k-1},\neg p_k, (\neg p_1,\dots,\neg p_{k-1}, p_k)\}$.
+    \item The last claim does not contradict the statement since any $\Sigma''$ we create is finite, so a finite inconsistent subset we can find is $\Sigma''$ itself.
+    \item 
+    \begin{enumerate}
+        \item (Assignment 4 Question 2b) The statement is true.
+        \begin{proof}
+            Assume $\Sigma$ is satisfiable and $\Sigma\models\alpha$. By definition, for any truth valuation $t$ such that $\Sigma^t=1$, we have $\alpha^t=1$. Since $\Sigma$ is satisfiable, such a valuation exists. So we can choose any valuation that satisfies $\Sigma$, and it will satisfy $\Sigma\cup\{\alpha\}$.
+        \end{proof}
+        \item The statement is true.
+        \begin{proof}
+            Assume $\Sigma$ is consistent and $\Sigma\vdash\alpha$. By completeness and soundness of propositional logic, $\Sigma$ is satisfiable and $\Sigma\models\alpha$. By a), $\Sigma\cup\{\alpha\}$ is satisfiable. By soundness again, $\Sigma\cup\{\alpha\}$ is consistent.
+        \end{proof}
+    \end{enumerate}
+\end{enumerate}
+
+\section{Decidability}
+Question 3 and 4 incomplete.
+\begin{enumerate}
+    \item $W_1$ is not decidable. I assume that the question means $\sigma$ is code for a program that could possibly take in many inputs, but will halt on at least one input.
+    \begin{proof}
+        For the sake of contradiction, assume there is an algorithm \code{B} which solves this problem. We will construct an algorithm \code{A} which solves the halting problem. Algorithm \code{A} works as follows.
+        \begin{itemize}
+            \item \code{A} takes in two inputs, a program \code{P} and an input \code{I}.
+            \item Let program \code{P'} run the program \code{P}, and return \code{P()}.
+            \item Run algorithm \code{B} with the code of \code{P'}, $\sigma$, as input.
+        \end{itemize}
+    \end{proof}
+    \item $W_2$ is decidable. 
+    \begin{proof}
+        Note that $\sigma$ is finitely long, and that $\sigma$ is valid C code that compiles. We can construct an algorithm \code{B} for input $\sigma$ that makes $W_1$ decidable. \code{B} works as follows:
+        \begin{itemize}
+            \item Convert binary code $\sigma$ to regular C code.
+            \item Use the regex \code{if.*(.*).*}$\{$\code{.*}$\}$\code{.*(else|else.*if).*}$\{$\code{.*}$\}$ to match any strings in the code.
+            \item If the regex matches with any string, halt and return 1.
+            \item Otherwise, return 0.
+        \end{itemize}
+        The above will always halt since $\sigma$ is finite.
+    \end{proof}
+    \item For clarification, $\sigma_1$ and $\sigma_2$ are inputs for the program $\sigma$. $W_3$ is not decidable.
+    \begin{proof}
+        For the sake of contradiction, assume there is a program \code{B} that solves this problem. We will construct an algorithm \code{A} that solves the halting problem, which works as follows:
+        \begin{itemize}
+            \item \code{A} takes in two inputs, a program \code{P} and an input \code{I}
+        \end{itemize}
+    \end{proof}
+    \item wuhh
+    \item $W_5$ is decidable. An algorithm can take in $\sigma$ as input, count the number of bits $s=\#(\sigma)$, and return $s\equiv 0\pmod{2}$.
+    \item $W_6$ is decidable. An algorithm can convert $\sigma$ to base 10 (optional), and run a prime checking program on it. Since $\sigma$ is finite, this program will always halt.
+\end{enumerate}
+
+\end{document}
