@@ -1,0 +1,78 @@
+\documentclass[12pt]{article}
+%\usepackage{tasks}
+\usepackage{exsheets}
+\usepackage{fullpage}
+\usepackage{multicol}
+\usepackage{amsmath,amsthm,amssymb}
+\SetupExSheets[question]{type=exam}
+
+\newtheorem{theorem}{Theorem}
+\newtheorem{corollary}{Corollary}[theorem]
+\newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{proposition}[theorem]{Proposition}
+
+\newcommand{\N}{\mathbb{N}}
+\newcommand{\Z}{\mathbb{Z}}
+\newcommand{\R}{\mathbb{R}}
+\title{MATH237 Lecture 02}
+\author{Peter He}
+\date{January 8 2020}
+
+\begin{document}
+
+\maketitle
+
+\section{Scalar functions and graphs continued}
+\subsection{Example of graphing: $z=2x+y$}
+
+Recall that we should sketch the level curves and cross-sections, then consider the symmetry.
+\begin{itemize}
+    \item If $z=c$ for some constant $c$, we have the line $y=-2x+c$. So our level curves will look like lines with negative slope.
+    \item Consider the cross sections $z=2x+c$ and $z=2c+y$. The cross sections are also lines (on the $z-x$ and $z-y$ plane). They are also lines, both with positive slope, with the first one being steeper than the other.
+    \item Now we sketch the entire graph.
+\end{itemize}
+
+\subsection{Example 2: $z=x^2+y^2$}
+\begin{itemize}
+    \item Level curves: $c=x^2+y^2$ - circle
+    \item Cross Sections: $z=c^2+y^2$ and $z=x^2+c^2$ - parabola
+    \item Now we sketch the entire graph - it's a parabolic cone, infinite paraboloid
+\end{itemize}
+
+\subsection{Example 3: $z=\sqrt{x^2+y^2}$}
+\begin{itemize}
+    \item Level curves: $c=\sqrt{x^2+y^2}=c^2+x^2+y^2$ - circle again
+    \item Cross Sections: $z^2 = x^2+c^2$ - what shape is this? If $c=0$ then the graph looks like $z=|x|$ on the $z-x$ plane.
+    \item The shape is a cone - hyperbola
+\end{itemize}
+
+\subsection{Example 4: $z=xy$}
+\begin{itemize}
+    \item Level curves: $c=xy$ - shape of the reciprocal function 
+    \item Cross Sections: $z=cx$ and $z=cy$ - lines with different slopes
+\end{itemize}
+
+\subsection{Matching with images from the slide}
+\begin{itemize}
+    \item Figure 1 corresponds to example 4
+    \item Figure 2 corresponds to example 1
+    \item Figure 3 corresponds to example 3
+    \item Figure 4 corresponds to example 2
+\end{itemize}
+
+\section{Limits}
+\textbf{Definition:} A function $f:\R\to\R$ is \textbf{continuous} at $a$ if $\lim\limits_{x\to a} f(x)=f(a)$.\\
+\textbf{Definition:} A function $f:\R^2\to\R$ is \textbf{continuous} at $(a,b)$ if $\lim\limits_{(x,y)\to (a,b)}f(x,y)=f(a,b)$.\\
+What does this mean? For a function $f:\R\to R$, $\lim\limits_{x\to a}f(x)=L$ means as $x$ gets close to $a$, $f(x)$ gets close to $L$. More precisely, for every interval around $L$, we can construct an interval around $a$ such that $f$ maps every element in that interval to $L's$ interval.\\\\
+How about for $f:\R^2\to\R$?. \\
+\textbf{Definition:} $\lim_{(x,y)\to (a,b)}f(x,y)=L$ means that for any $\varepsilon>0$, there is a $\delta>0$ such that if $||\underline x-\underline a||<\delta$ then $|f(\underline x)-L|<\varepsilon$.
+
+\subsection{Example}
+\[f(x,y)=\begin{cases}
+    \frac{\sin xy}{x^2+y^2} &(x,y)\neq (0,0)\\
+    0 &(x,y)=(0,0)
+\end{cases}
+    \]
+Does \[\lim_{\underline x\to \underline 0}f(\underline x)\]
+exist?
+\end{document}

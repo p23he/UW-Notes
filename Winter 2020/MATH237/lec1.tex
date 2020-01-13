@@ -1,0 +1,74 @@
+\documentclass[12pt]{article}
+%\usepackage{tasks}
+\usepackage{exsheets}
+\usepackage{fullpage}
+\usepackage{multicol}
+\usepackage{amsmath,amsthm,amssymb}
+\SetupExSheets[question]{type=exam}
+
+\newtheorem{theorem}{Theorem}
+\newtheorem{corollary}{Corollary}[theorem]
+\newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{proposition}[theorem]{Proposition}
+
+\newcommand{\N}{\mathbb{N}}
+\newcommand{\Z}{\mathbb{Z}}
+\newcommand{\R}{\mathbb{R}}
+\title{MATH237 Lecture 01}
+\author{Peter He}
+\date{January 6 2020}
+
+\begin{document}
+
+\maketitle
+
+\section{Overview of the Course}
+We covered functions of 1 variable, in general $f:\R\to\R$. We covered topics such as
+\begin{itemize}
+    \item Limits
+    \item Continuity
+    \item Linear approximation
+    \item Differentiation
+    \item Integration
+\end{itemize}
+We will now cover funcctions of $>1$ variables, in general $f:\R^n\to\R^m$. Examples of multivariable functions:
+\begin{itemize}
+    \item Ocean temp
+    \item Temp of Canada
+    \item wind in Canada
+    \item factory production
+\end{itemize}
+Scalar functions ($f:\R^n\to\R$)
+\begin{itemize}
+    \item Scalar functions are the focus of this course
+    \item most of the discussion is for $n=2$
+    \item Generalization to $n=$ and arbitrary $n$
+\end{itemize}
+
+\section{Graphs}
+We will discuss \textbf{terminology} and \textbf{visualization}\\\\
+Review:\\
+A function $f:A\to B$ is a rule that associates each $a\in A$ to a unique element of $B$, $f(a)$. The domain of $f$ is $A$, $D(f)$. The range of $f$ is $R(f)=\{b\in B|b=f(a), a\in A\}$. $f(x,y)$ can mean the value of $f$ at the point $(x,y)$ or more usually that $f$ is a function of 2 variables.\\\\
+Example: $f(x,y)=x^2+y^2$. We can see that $f:\R^2\to \R, D(f)=\R^2,$ and $R(f)=\{z\in \R|z\geq 0\}\subset\R$
+
+\subsection{Visualization of $f:\R\to\R$}
+Methods:
+\begin{itemize}
+    \item Level curves
+    \item Cross-sections
+    \item Symmetry
+    \item Analysis
+    \item Computer plots
+\end{itemize}
+Example: $f(x,y)=z$.
+\begin{itemize}
+    \item Level curves: $z=c$: $x^2+y^2=c$ for some constant $c$ (we would get some sort of circle, analogous to looking "down" on the shape)
+    \item Cross-sections: $y=c$ or $x=c$: $x^2+c^2=z$ (we would get some sort of parabola)
+\end{itemize}
+We might guess that the shape is a parabolic cone thing.
+
+Let's look at $f(x,y)=\sin(x^2+y^2)$. Level curves are of the form $c=\sin(x^2+y^2)$ or $\arcsin c=x^2+y^2$. We expect to see a bunch of circles when graphed.\\
+Cross sections: $z=\sin(x^2+c^2)$. We expect to see a distorted sine curve shifted left.\\
+Symmetry:
+
+\end{document}
