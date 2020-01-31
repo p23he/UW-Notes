@@ -1,0 +1,68 @@
+\documentclass[12pt]{article}
+%\usepackage{tasks}
+\usepackage{exsheets}
+\usepackage{fullpage}
+\usepackage{multicol}
+\usepackage{amsmath,amsthm,amssymb}
+\SetupExSheets[question]{type=exam}
+
+\newtheorem{theorem}{Theorem}
+\newtheorem{corollary}{Corollary}[theorem]
+\newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{proposition}[theorem]{Proposition}
+\theoremstyle{definition}
+\newtheorem{definition}{Definition}[section]
+
+\newcommand{\N}{\mathbb{N}}
+\newcommand{\Z}{\mathbb{Z}}
+\newcommand{\R}{\mathbb{R}}
+\title{MATH237 Lecture 12}
+\author{Peter He}
+\date{January 31 2020}
+
+\begin{document}
+
+\maketitle
+
+\section{Last Class}
+I was not in class lol.
+
+\section{This Class: Proof of the chain rule: look at slides}
+
+\section{Examples of applying the chain rule}
+Let $f(x,y)=(xy)^{1/3}$. We have that $x(t)=t$, $y(t)=t^2$. Define $F(t)=f(x(t), y(t))$. Find $F'(0)(\frac{DF}{dt})$.\\
+Solution:\\\\
+Formally, $\frac{\partial f}{\partial x}=(1/3)(xy)^{-2/3}y$. When $x(0)=0, y(0)=0$, it's not defined, so we must used the defn.
+\[\lim_{h\to 0}\frac{f(0 + h, 0)-f(0,0)}{h}=\lim_{h\to 0}\frac{0-0}{h}=0\]
+Thus, $f_x(0,0)=0$. Similarly, $f_y(0,0)=0$. 
+\begin{enumerate}
+    \item Using the chain rule,\begin{align*}
+    \frac{\partial F}{\partial t}(0)&=\frac{\partial f}{\partial x}(0,0)\frac{dx}{dt}(0)+\frac{\partial f}{\partial y}(0,0)\frac{dy}{dt}\\
+    &=0+0=0\end{align*}
+    \item Directly, \begin{align*}
+    F(t)&=(tt^2)^{1/3}=t\\
+    \frac{dF}{dt}=1
+    \end{align*}
+    Which one is right? Using the chain rule, we assumed $f$ is differentiable at $(0,0)$, which is false.
+\end{enumerate}
+Lesson: Must make sure everything is differentiable.
+
+\section{Example 2}
+\[f(x,y,z)=e^xyz^2\]
+\[x(t)=\cos(t), y=t^2, z=t\]
+Define \[F(t)=f(x(t), y(t), z(t))\]
+We find that \[f_x=e^xyz^2, f_y=e^xz^2, f_z=2e^xyz\]
+The Continuity Theorems imply that all the partial derivatives are continuous on $\R^2$. Let's find $F'(t)$.
+\begin{align*}
+    \frac{dx}{dt}&=-\sin t\\
+    \frac{dy}{dt}&=2t\\
+    \frac{dz}{dt}&=1\\\\
+    \frac{dF}{dt}&=\frac{\partial f}{\partial x}(x,y,z)\frac{dx}{dt}+\frac{\partial f}{\partial y}(x,y,z)\frac{dy}{dt}+\frac{\partial f}{\partial z}(x,y,z)\frac{dz}{dt}\\
+    &=(e^xyz^2)(-\sin t)+(e^xz^2)(2t)+(2e^xyz)(1)\\
+    &=e^{\cos t}t^3(4-t\sin t)
+\end{align*}
+
+\section{Extension 1 of the Basic Chain Rule - More than 1 independent variable}
+
+
+\end{document}

@@ -1,0 +1,114 @@
+\documentclass[12pt]{article}
+%\usepackage{tasks}
+\usepackage{exsheets}
+\usepackage{fullpage}
+\usepackage{multicol}
+\usepackage{amsmath,amsthm,amssymb}
+\SetupExSheets[question]{type=exam}
+
+\newtheorem{theorem}{Theorem}
+\newtheorem{corollary}{Corollary}[theorem]
+\newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{proposition}[theorem]{Proposition}
+\theoremstyle{definition}
+\newtheorem{definition}{Definition}[section]
+
+\newcommand{\N}{\mathbb{N}}
+\newcommand{\Z}{\mathbb{Z}}
+\newcommand{\R}{\mathbb{R}}
+\title{MATH237 Lecture 06}
+\author{Peter He}
+\date{January 17 2020}
+
+\begin{document}
+
+\maketitle
+
+\section{Clicker!}
+Is \[f(x,y)=\begin{cases}\frac{xy^2}{x^2+y^6}&(x,y)\neq(0,0)\\0&(x,y)=(0,0)\end{cases}\] continuous at $(0,0)$?
+
+Yes! We check if the limit exists at (0,0) and if it does, check if it's 0. We will try $y=mx$.
+\begin{align*}
+    \lim_{x\to 0}f(x,mx)&=\lim_{x\to 0}\frac{m^4x^5}{x^2+m^6x^6}\\
+    &=\lim_{x\to 0}\frac{m^4x^3}{1+m^6x^4}\\
+    &=0
+\end{align*}
+we suspect the limit is 0. We prove it 
+\begin{proof}
+    \begin{align*}
+        0\leq \left|\frac{xy^2}{x^2+y^6} -0\right|&\leq \frac{|x|y^4}{2|x||y|^3}\qquad\text{Young's Inequality}\\
+        &=\frac{1}{2}|y|
+    \end{align*}
+    Since $\lim_{\underline x\to\underline 0}\frac{1}{2}|y|=0, \lim_{\underline x\to\underline 0}\frac{xy^4}{x^2+y^6}=0=f(0,0)$. Thus the function is continuous at $(0,0)$.
+\end{proof}
+
+\section{Partial Derivatives}
+\begin{definition}[Partial Derivative]
+    Let $f:B(r,\underline a)\subset \R^2\to\R$. The \textit{partial derivative of $f(x,y)$ with respect to $x$} at $\underline a=(a,b)$ is (if the limit exists)
+    \[\frac{\partial f}{\partial x}(a,b)=\lim_{t\to 0}\frac{f(a+t,b)-f(a,b)}{t}\]
+    and the \textit{partial derivative of $f(x,y)$ with respect to $y$} at $\underline a=(a,b)$ is (if the limit exists)
+    \[\frac{\partial f}{\partial x}(a,b)=\lim_{t\to 0}\frac{f(a,b+t)-f(a,b)}{t}\]
+\end{definition}
+
+\subsection{Notation}
+\begin{itemize}
+    \item point in $\R^n$ indicated by underscore (class) or bold (text): $\underline a$ or $\mathbf a$
+    \item partial derivative of $f(x,y)$ with respect to $x$ indicated by: \[\frac{\partial f}{\partial x}, f_x, D_1f, D_x\]
+\end{itemize}
+
+\begin{definition}
+    Suppose that $f:B(r,\underline a)\subset \R^n\to \R$ has partial dervatives $\underline a$. The \textit{gradient} of $f$ at $\underline a$ is \[\nabla f(\underline a)=(f_{x_1}(\underline a),\dots, f_{x_n}(\underline a))\]
+\end{definition}
+
+\subsection{Example 1}
+Let \[f(x,y)=x^2+xy^3\] Then we have
+\begin{align*}
+    \lim_{t\to 0}\frac{f(x+t), y-f(x,y)}{t}&=\lim_{t\to 0}\frac{(x+t)^2+(x+t)y^3-x^2-xy^3}{t}\\
+    &=\lim_{t\to 0}\frac{2xt+t^2+ty^3}{t}\\
+    &=2x+y^3
+\end{align*}
+
+Thus $\frac{\partial f}{\partial x}(x,y)=2x+y^3$. Or,
+
+We can also use regular rules if we treat $y$ is constant.
+
+\subsection{Example 2}
+Let \[f(x,y)=\sqrt{x^2+y^2}=(x^2+y^2)^{1/2}, (x,y)\]
+
+\begin{align*}
+    \frac{\partial f}{\partial x}&=\frac{x}{\sqrt{x^2+y^2}}\\
+    \frac{\partial f}{\partial y}&=\frac{y}{\sqrt{x^2+y^2}}
+\end{align*}
+at $(x,y)\neq(0,0)$. For $(x,y)=(0,0)$, we must use the definition and check if the limit even exists:
+\begin{align*}
+    \lim_{t\to 0}\frac{f(0+t, 0)-f(0,0)}{t}&=\lim_{t\to 0}\frac{\sqrt{t^2}-0}{t}\\
+    &=\lim_{t\to 0}\frac{|t|}{t}
+\end{align*}
+The limit does not exist so $\frac{\partial f}{\partial x}(0,0)$ doesn't exist. Similarly, $\frac{\partial f}{\partial y}(0,0)$ doesn't exist. $f$ is continuous, so this example shows that continuity does not imply existence of partial derivative.
+
+
+\subsection{Example 3}
+Let \[f(x,y)=\begin{cases}\frac{xy}{x^2+y^2}&(x,y)\neq(0,0)\\ 0&(x,y)=(0,0)\end{cases}\]
+Then for $(x,y)\neq (0,0)$:
+\begin{align*}
+    \frac{\partial f}{\partial x}=\frac{y(x^2+y^2)-xy2x}{(x^2+y^2)^2}
+\end{align*}
+At $(x,y)=(0,0)$:
+\begin{align*}
+    \lim_{t\to 0}\frac{f(t+0,0)-f(0,0)}{t}&=\lim_{t\to 0}\frac{0-0}{t}\\
+    &=0
+\end{align*}
+So $\frac{\partial f}{\partial x}(0,0)=0$. Similarly, by symmetry, $\frac{\partial f}{\partial y}(0,0)=0$. It can be shown that $\lim_{\underline x\to\underline 0}f(\underline x)$ doesn't exist, so the function is not continuous. This example shows that even if all the partial derivatives exist, the function may not be continuous.
+
+\subsection{Remarks}
+\begin{itemize}
+    \item Calculate a partial derivative just as you would for single variable calculus: all other variables are held constant
+    \item Examples illustrate that:
+    \begin{itemize}
+        \item A continuous function may fail to have partial derivatives
+        \item A discontinuous function may have partial derivatives
+    \end{itemize}
+\end{itemize}
+
+
+\end{document}

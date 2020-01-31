@@ -1,0 +1,54 @@
+\documentclass[12pt]{article}
+%\usepackage{tasks}
+\usepackage{exsheets}
+\usepackage{fullpage}
+\usepackage{multicol}
+\usepackage{amsmath,amsthm,amssymb}
+\SetupExSheets[question]{type=exam}
+
+\newtheorem{theorem}{Theorem}
+\newtheorem{corollary}{Corollary}[theorem]
+\newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{proposition}[theorem]{Proposition}
+\theoremstyle{definition}
+\newtheorem{definition}{Definition}[section]
+
+\newcommand{\N}{\mathbb{N}}
+\newcommand{\Z}{\mathbb{Z}}
+\newcommand{\R}{\mathbb{R}}
+\title{MATH237 Lecture 08}
+\author{Peter He}
+\date{January 22 2020}
+
+\begin{document}
+
+\maketitle
+
+\section{Clicker Review!}
+\[f(x,y)=\begin{cases}\frac{xy}{\sqrt{x^2+y^2}}&(x,y)\neq(0,0)\\0&(x,y)=(0,0)\end{cases}\]
+Does $L(x,y)$ exist at $(0,0)$? Yes, $L(x,y)=0$.
+
+\section{Rigourous Definition of Differentiability}
+
+\begin{definition}
+    A function $f:B(r,\underline a)\subset\R^2\to\R, r>0$ is \textbf{differentiable} at $\underline a=(a,b)$ if he partial derviatives exist at $\underline a$ and the linear approximation \[L_{\underline a}(x)=f(\underline a)+f_x(\underline a)(x-a)+f_y(\underline a)(y-b)\] satisifies \[\lim_{\underline x\to\underline a}\frac{|f(x)-L_{\underline a}(\underline x)|}{||\underline a-\underline a||}\]
+\end{definition}
+
+\subsection{Example}
+Let \[f(x,y)=x^2+y^2\] and \[\underline a=(1,2)\] Is $f$ differentiable at $(1,2)$? Yes.\\\\
+Solution:\\
+Calculate $L(x,y)$ at $(1,2)$. 
+
+\begin{align*}
+    f(1,2)&=5\\\\
+    f_x(x,y)&=2x\implies f_x(1,2)=2\\
+    f_y(x,y)&=2y\implies f_y(1,2)=4\\\\
+    L(x,y)&=-5+2x+4y
+\end{align*}
+Now we need to show \[\lim_{\underline x\to\underline a}\frac{|f(x,y)-L(x,y)|}{||(x,y)-(1,2)||}=0\] so 
+\begin{align*}
+    \frac{|f(x,y)-L(x,y)|}{||(x,y)-(1,2)||}&=\frac{|x^2+y^2-5-2(x-1)-4(y-2)|}{\sqrt{(x-1)^2+(y-2)^2}}\\
+    &=\sqrt{(x-1)^2}
+\end{align*}
+
+\end{document}

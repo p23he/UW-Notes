@@ -1,0 +1,74 @@
+\documentclass[12pt]{article}
+%\usepackage{tasks}
+\usepackage{exsheets}
+\usepackage{fullpage}
+\usepackage{multicol}
+\usepackage{amsmath,amsthm,amssymb}
+\SetupExSheets[question]{type=exam}
+
+\newtheorem{theorem}{Theorem}
+\newtheorem{corollary}{Corollary}[theorem]
+\newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{proposition}[theorem]{Proposition}
+\theoremstyle{definition}
+\newtheorem{definition}{Definition}[section]
+
+\newcommand{\N}{\mathbb{N}}
+\newcommand{\Z}{\mathbb{Z}}
+\newcommand{\R}{\mathbb{R}}
+\title{MATH237 Lecture 10}
+\author{Peter He}
+\date{January 27 2020}
+
+\begin{document}
+
+\maketitle
+
+\section{Last Class}
+Recall the defintion of a function being differentiable.
+\begin{definition}
+    A function $f:B(r,\underline a)\subset \R^2\to\R, r>0$ is differentiable at $\underline a=(a,b)$ if the partial derivatives exist at $\underline a$ and the linear approximation \[L_{\underline a}(\underline x)=f(\underline a)+f_x(\underline a)(x-a)+f_y(\underline a)(y-b)\] satisfies \[\lim_{\underline x\to \underline a}\frac{|f(\underline x)-L_{\underline a}(\underline x)|}{||\underline x-\underline a||}\]
+\end{definition}
+Intuitively, being differentiable exactly means having a good linear approximation at the point.
+\section{More on Differentiability}
+\begin{proposition}
+    Consider $f:B(r,\underline a)\subset\R^n\to\R, r>0$. If all the partial derivatives exist within $B$ and are continuous at $\underline a$, then $f$ is differentiable at $\underline a$.
+\end{proposition}
+\begin{theorem}[Mean Value Theorem on $\R$]
+    Consider $g[c,d]\to\R$. If $f$ is continuous on $[c,d]$ and differentiable on $(c,d)$ then there is a point $x_0$ such that \[g(c)-g(d)=g'(x_0)(c-d)\]
+\end{theorem}
+
+\begin{proof}
+    Proof of the claim on slides.
+\end{proof}
+
+\subsection{Example 1}
+Consider \[f(x,y)=\begin{cases}(x^2+y^2)\sin(\frac{1}{\sqrt{x^2+y^2}})&(x,y)\neq(0,0)\\0&(x,y)=(0,0)\end{cases}\]
+Where is $f$ differentiable?\\\\
+\underline{At $(x,y)\neq (0,0)$}: Is $f$ differentiable? (Clicker: Yes or No$\to$ Yes)\\
+Compute the partial derivatives, and conclude that they are continuous for non 0 points.
+\underline{At $(x,y)=(0,0)$}:\\
+\begin{align*}
+    f_x?:\lim_{h\to 0}\frac{f(h+0,0)-f(0,0)}{h}&=\lim_{h\to 0}\frac{h^2\sin(\frac{1}{|h|})}{h}\\
+    &=\lim_{h\to 0}h\sin(\frac{1}{|h|})\\
+    &=0
+\end{align*}
+Thus $f_x(0,0)$ exists and $f_x(0,0)=0$. Similarly, $f_y(0,0)=0$. Thus, \[L(x,y)=f(0,0)+f_x(0,0)(x-0)+f_y(0,0)(y-0)=0\]
+Check differentiability using the definition:
+\begin{align*}
+    \frac{|f(x,y)-L(x,y)|}{\sqrt{x^2+y^2}}&=\frac{|(x^2+y^2)\sin(\frac{1}{\sqrt{x^2+y^2}})-0|}{\sqrt{x^2+y^2}}\\
+    &=\sqrt{x^2+y^2}|\sin(\frac{1}{\sqrt{x^2+y^2}})|\\
+    &\leq \sqrt{x^2+y^2}
+\end{align*}
+So \[\lim_{||\underline x-\underline 0}\frac{|f(x,y)-L(x,y)|}{\sqrt{x^2+y^2}}=0\] by the Squeeze Theorem. Therefore, $f$ is differentiable on $\R^2$.
+\subsubsection{Is $f_x$ continuous at $(0,0)$?}
+$f_x(x,y)=2x\sin(\frac{1}{\sqrt{x^2+y^2}})-\frac{x}{\sqrt{x^2+y^2}}\cos(\frac{1}{\sqrt{x^2+y^2}})$. The limit of the first term is 0 as $\underline x\to \underline 0$.
+As for the second term, the limit does not exist. So use the definition for niche/edge case points.
+
+\subsection{Relationships between stuff}
+
+\begin{itemize}
+    \item Differentiability implies existence of partial derivatives AND continuity
+    \item Continuous partial derivatives implies differentiability
+\end{itemize}
+\end{document}

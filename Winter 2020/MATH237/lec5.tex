@@ -1,0 +1,79 @@
+\documentclass[12pt]{article}
+%\usepackage{tasks}
+\usepackage{exsheets}
+\usepackage{fullpage}
+\usepackage{multicol}
+\usepackage{amsmath,amsthm,amssymb}
+\SetupExSheets[question]{type=exam}
+
+\newtheorem{theorem}{Theorem}
+\newtheorem{corollary}{Corollary}[theorem]
+\newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{proposition}[theorem]{Proposition}
+\theoremstyle{definition}
+\newtheorem{definition}{Definition}[section]
+
+\newcommand{\N}{\mathbb{N}}
+\newcommand{\Z}{\mathbb{Z}}
+\newcommand{\R}{\mathbb{R}}
+\title{MATH237 Lecture 05}
+\author{Peter He}
+\date{January 15 2020}
+
+\begin{document}
+
+\maketitle
+
+Recall that a function is continuous at $\underline a$ if $\lim_{\underline x\to\underline a} f(\underline x)=f(\underline a)$. We also had the sum, quotient, and product continuity theorems.\\\\
+\section*{Using the continuity theorems to show a function is continuous}
+\subsection*{Example 1}
+Show $e^{xy}\ln(x^2+y^2)$ is continuous for all $(x,y)\neq (0,0)$.
+\begin{proof}
+    The functions $x,y$ are continuous, as is $x^2,y^2$, so $xy$ is continuous by the Product Continuity Theorem and $x^2+y^2$ is continuous by the Sum Continuity Theorem. Composition continuity theorem implies $e^{xy}$ and $\ln(x^2+y^2)$ are continuous as well. By the Product Continuity Theorem, the final function is continuous.
+\end{proof}
+Usually, the proof does not need to be in this detail.
+
+\subsection*{Example 2}
+Prove that \[f(x,y)=\begin{cases}\frac{\sin(x^2+y^2)}{x^2+y^2}&(x,y)\neq (0,0)\\1&(x,y)=(0,0)\end{cases}\] is continuous on $\R^2$. Hint: \[\text{sinc}(v)=\begin{cases}\frac{\sin(v)}{v}&v\neq 0\\1&v=0\end{cases}\] is continuous for all $v\in\R$.
+
+\begin{proof}
+    By the sum, quotient, and composition continuity theorems, $\frac{\sin(x^2+y^2)}{x^2+y^2}$ is continuous for $(x,y)\neq (0,0)$. Since $f(x,y)=\text{sinc}(x^2+y^2)$, by the composition continuity theorem, $f$ is continuous on $\R^2$.
+\end{proof}
+
+\subsection*{Example 3}
+\[f(x,y)=\frac{\sin(xy)}{x^2+y^2}, (x,y)\neq (0,0)\] $f$ is continuous at all $(x,y)\in (0,0$ by the Continuity Theorems (exercise). Can $f(0,0)$ be defined so $f$ is continuous at 0? No, since the limit does not exist.
+\begin{proof}[The limit does not exist]
+    $\lim_{x\to 0} f(x,0)=\lim_{x\to 0}\frac{0}{y^2}=0$ but $\lim_{x\to 0}f(x,x)=\lim_{x\to 0}\frac{\sin(x^2)}{2x^2}=\frac{1}{2}$
+\end{proof}
+
+\subsection*{Example 4}
+\[f(x,y)=\begin{cases}\frac{x^2y}{x^2+y^2}&(x,y)\neq (0,0)\end{cases}\]
+Again, Continuity Theorems imply $f$ is continuous for all $(x,y)\neq (0,0)$. Can we define $f(0,0)$ so its continuous at $(0,0)$? Since the limit along $y=mx$ is 0, we suspect the limit exists and is 0. We prove that with the Squeeze Theorem.
+\begin{proof}
+    \begin{align*}
+        0\leq |\frac{x^2y}{x^2+y^2}-0|&\leq|\frac{x^2y}{x^2}|\\
+        &=|y|
+    \end{align*}
+    Since $\lim_{\underline x\to \underline 0}|y|=0$, the limit is indeed 0.
+\end{proof}
+
+\subsection*{Example 5 (Slide 54)}
+Can $f(x,y)=\frac{xy}{\sqrt{x^2+y^2}}$ be defined at $\underline 0$ so that it is continuous on all $\R^2$? Yes, define it to be 0. Is it currently continuous at (0,0)? No, nothing is defined there atm (automatic teller machine).\\
+What if $f(0,0)$ is defined to be 5? Still not continuous lol.
+
+\subsection*{Example 6}
+\[f(x,y)=\begin{cases}\frac{xy^4}{x^2+y^6}&(x,y)\neq (0,0)\\0&(x,y)=(0,0)\end{cases}\]
+We check if the limit exists at (0,0) and if it does, check if it's 0. We will try $y=mx$.
+\begin{align*}
+    \lim_{x\to 0}f(x,mx)&=\lim_{x\to 0}\frac{m^4x^5}{x^2+m^6x^6}\\
+    &=\lim_{x\to 0}\frac{m^4x^3}{1+m^6x^4}\\
+    &=0
+\end{align*}
+we suspect the limit is 0. We prove it 
+\begin{proof}
+    \begin{align*}
+        0\leq \left|\frac{}{} \right|
+    \end{align*}
+\end{proof}
+
+\end{document}

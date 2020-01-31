@@ -1,0 +1,53 @@
+\documentclass[12pt]{article}
+%\usepackage{tasks}
+\usepackage{exsheets}
+\usepackage{fullpage}
+\usepackage{multicol}
+\usepackage{amsmath,amsthm,amssymb}
+\SetupExSheets[question]{type=exam}
+
+\newtheorem{theorem}{Theorem}
+\newtheorem{corollary}{Corollary}[theorem]
+\newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{proposition}[theorem]{Proposition}
+\theoremstyle{definition}
+\newtheorem{definition}{Definition}[section]
+
+\newcommand{\N}{\mathbb{N}}
+\newcommand{\Z}{\mathbb{Z}}
+\newcommand{\R}{\mathbb{R}}
+\title{MATH237 Lecture 09}
+\author{Peter He}
+\date{January 24 2020}
+
+\begin{document}
+
+\maketitle
+
+\section{Clicker!}
+Consider \[f(x,y)=|xy|\]. You are given $f(0,0)=f_x(0,0)=f_y(0,0)=0$. Is $f$ differentiable at $(0,0)$?\\\\
+Yes!
+
+\section{Relationship between Continiuity and Differntiability}
+\begin{itemize}
+    \item Continuity doesn't imply existence of partial derivatives or differentiability
+    \item Existence of partial derivatives does not imply diff or continuity
+    \item However, differentiability does imply continuity
+\end{itemize}
+
+\begin{theorem}
+    If $f: B(r,\underline a)\subset \R^n\to \R^m, R>0$ is differentiable at $\underline a$ then it is continuous at $\underline a$.
+\end{theorem}
+
+\begin{proof}
+    Differentiability implies $f$ is defined at $\underline a=(a,b)$. It must be shown that $\lim_{\underline x\to\underline a}f(\underline x)=f(\underline a)$ or $\lim_{\underline x\to\underline a}|f(\underline x)-f(\underline a)|=0$.
+    \begin{align*}
+        0\leq |f(\underline x)-f(\underline a)|&\leq |f(\underline x)-f(\underline a)-f_x(\underline a)(x-a)-f_y(\underline a)(y-b)|+|f_x(\underline a)(x-a)+f_y(\underline a)(y-b)|\\
+        &=|f(\underline x)-L(\underline x)|+|f_x(\underline a)(x-a)+f_y(\underline a)(y-b)|\\
+        &=\frac{|f(\underline x)-L(\underline x)}{||\underline x-\underline a||}||\underline x-\underline a||+|f_x(\underline a)(x-a)|+|f_y(\underline a)(y-b)|
+    \end{align*}
+    Since $f$ is differentiable, $\lim_{\underline x\to \underline a}\frac{|f(\underline x)-L(\underline x)|}{||\underline x-\underline a||}=0$ by definition of differentiability. The Product Limit Theorem and Sum Limit theorem imply the limit of the right hand side is 0. Thus, by the Squeeze theorem $\lim_{\underline x\to\underline a}|f(\underline x)-f(\underline a)|=0$. By definition, $f$ is continuous at $\underline a$.
+\end{proof}
+
+
+\end{document}

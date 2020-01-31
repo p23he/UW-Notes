@@ -1,0 +1,83 @@
+\documentclass[12pt]{article}
+%\usepackage{tasks}
+\usepackage{exsheets}
+\usepackage{fullpage}
+\usepackage{multicol}
+\usepackage{amsmath,amsthm,amssymb}
+\SetupExSheets[question]{type=exam}
+
+\newtheorem{theorem}{Theorem}
+\newtheorem{corollary}{Corollary}[theorem]
+\newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{proposition}[theorem]{Proposition}
+\theoremstyle{definition}
+\newtheorem{definition}{Definition}[section]
+
+\newcommand{\N}{\mathbb{N}}
+\newcommand{\Z}{\mathbb{Z}}
+\newcommand{\R}{\mathbb{R}}
+\title{MATH237 Lecture 04}
+\author{Peter He}
+\date{January 13 2020}
+
+\begin{document}
+
+\maketitle
+
+\section{Last Class}
+Recall the definition of a limit.
+\begin{definition}[Neighbourhood]
+    The neighbourhood of a point $a$ is a ball $B(r, a), r>0$.
+\end{definition}
+
+\begin{definition}[Limit]
+
+\end{definition}
+
+\subsection{Showing a limit doesn't exist}
+Calculate the limit along the lines $y=mx$ - If different values are obtained along different lines, the limit does not exist.\\
+If a single value of $L$ is obtained, the limit might exist. If it does, then it's $L$.
+
+\subsection{Showing a limit exists}
+\begin{itemize}
+    \item Limit theorems
+    \item Squeeze theorem 
+\end{itemize}
+
+\subsection{Exercise}
+Show that \[\lim_{\underline x\to\underline 0}\frac{xy}{\sqrt{x^2+y^2}}\] exists. What is the limit?\\
+Question: What technique should be used? It should be the Squeeze theorem.\\
+What is the limit? - 0\\
+Proof that the limit is 0:
+\begin{align*}
+    0\leq |\frac{xy}{\sqrt{x^2+y^2}}-0|&\leq \frac{|x||y|}{\sqrt{x^2}}\\
+    &=|y|
+\end{align*}
+Since $\lim_{\underline x\to\underline 0}|y|=0$, by the Squeeze theorem $\lim_{\underline x\to\underline 0}\frac{xy}{\sqrt{x^2+y^2}}=0$
+
+\section{Continuous Functions}
+\begin{definition}
+    A function $f:\R^n\to\R$ is continuous at $\underline a$ if \[\lim_{\underline x\to \underline a}f(\underline x)=f(\underline a).\]
+\end{definition}
+There are 3 parts to the definition:
+\begin{itemize}
+    \item $f$ is defined at $\underline a$
+    \item $\lim_{\underline x\to\underline a}f(x)$ exists
+    \item $\lim_{\underline x\to\underline a}f(x)=f(\underline a)$
+\end{itemize}
+Let $f:D(f)\subset \R^n\to\R, g:D(g)\subset\R^n\to \R$, then define for $\underline x\in D(f)\cap D(g),$
+\begin{itemize}
+    \item sum - $(f+g)(\underline x)=f(\underline x)+g(\underline x)$
+    \item product - $(fg)(\underline x)=f(\underline x)g(\underline x)$
+    \item quotient - $(f/g)(\underline x)=f(\underline x)/g(\underline x)$
+    \item composition - $(g\circ f)(\underline x)=g(f(\underline x))$
+\end{itemize}
+Continuity theorems: Consider $f:B(r,\underline a)\subset \R^n\to \R$ and $g:B(r,\underline a)\subset \R^n\to\R$ for some $r>0$. If $f$ and $g$ are continuous at $\underline a$,
+\begin{itemize}
+    \item $f+g$ is continuous at $\underline a$
+    \item $fg$ is continuous at $\underline a$.
+    \item if $g(\underline a)\neq 0$, $f/g$ is continuous at $\underline a$.
+    \item If $f:\R^n\to\R$ at $\underline a$ and $g:\R\to\R$ is continuous at $f(\underline a)$ then $(g\circ f)$ is continuous at $\underline a$.
+\end{itemize}
+
+\end{document}
